@@ -140,6 +140,7 @@ class PythonASTParser:
         return ModuleInfo(
             module_name=module_name,
             file_path=relative_path_string,
+            is_package_init=file_path.name == "__init__.py",
             functions=tuple(functions),
             calls=tuple(calls),
             imports=tuple(imports),

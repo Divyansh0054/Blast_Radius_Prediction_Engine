@@ -428,3 +428,25 @@ def second():
 
     assert "a::first" in result.graph.nodes
     assert "a::second" in result.graph.nodes
+
+def test_relative_import_from_package_init_resolves(tmp_path):
+    result = build_graph(
+        tmp_path,
+        {
+            "pkg/__init__.py": """
+from .submodule import foo
+
+def run():
+    foo()
+""",
+            "pkg/submodule.py": """
+def foo():
+    pass
+""",
+        },
+    )
+
+    assert (
+        "pkg::run",
+        "pkg.submodule::foo",
+    ) in result.graph.edges

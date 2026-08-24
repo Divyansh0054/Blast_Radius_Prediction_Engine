@@ -723,57 +723,45 @@ class CallGraphBuilder:
     ) -> str:
 
         if import_info.relative_level == 0:
-
             return import_info.module
 
         # Find the module containing the import.
-
         current_module = self._module_for_file(
             import_info.file_path
         )
 
         if current_module is None:
-
             return import_info.module
 
         parts = current_module.split(".")
 
-        # For:
-        #
-        # package.sub.module
-        #
-        # from .utils import x
-        #
-        # level 1 means:
-        #
-        # package.sub.utils
-        #
-        # level 2 means:
-        #
-        # package.utils
+        # Determine whether this import comes from __init__.py.
+        module_info = next(
+            (
+                module
+                for module in self.analysis.modules
+                if module.file_path == import_info.file_path
+            ),
+            None,
+        )
 
         remove_count = import_info.relative_level
 
-        if current_module.endswith(".__init__"):
-
-            base_parts = parts[:-1]
-
+        # __init__.py represents the package itself,
+        # so we must not remove the package name.
+        if module_info is not None and module_info.is_package_init:
+            base_parts = parts
         else:
-
             base_parts = parts[:-1]
 
         if remove_count > len(base_parts):
-
             base_parts = []
-
         else:
-
             base_parts = base_parts[
                 : len(base_parts) - remove_count + 1
             ]
 
         if import_info.module:
-
             base_parts.extend(
                 import_info.module.split(".")
             )

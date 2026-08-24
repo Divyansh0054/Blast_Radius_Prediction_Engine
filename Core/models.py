@@ -175,6 +175,8 @@ class ModuleInfo:
 
     file_path: str
 
+    is_package_init: bool = False
+
     functions: tuple[FunctionInfo, ...] = field(
         default_factory=tuple
     )
