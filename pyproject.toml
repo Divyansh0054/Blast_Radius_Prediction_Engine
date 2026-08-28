@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blast-radius-prediction-engine"
+version = "1.0.0"
+description = "Predict the blast radius and risk of Python code changes using structural, historical, and test coverage signals."
+requires-python = ">=3.11"
+dependencies = [
+    "GitPython>=3.1",
+    "networkx>=3.0",
+    "tree-sitter>=0.26",
+    "tree-sitter-python>=0.25",
+    "typer>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0",
+    "coverage>=7.0",
+]
+
+[tool.setuptools]
+py-modules = ["cli"]
+
+[tool.setuptools.packages.find]
+include = ["core*"]
+
+[project.scripts]
+blast-radius = "cli:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
